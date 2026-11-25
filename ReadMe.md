@@ -54,7 +54,14 @@ Demo 用打印机 A 和墨盒 B 串起七个场景。以下结果以 2026 年 11
 
 ### 2.2 框架和本地预览
 
-`src/demo/` 保存场景清单和命令行预览。业务数据与读取函数按上表放在 `src/business/` 下。`src/mastra/index.ts` 导出 Mastra 实例，旁边的 `agents/`、`prompts/`、`tools/`、`workflows/` 分别预留给 Agent、提示词、工具封装和流程编排。本阶段可跑的是数据预览和类型检查，Agent 对话、售后提交、投诉写入和人工接管流程留到对应任务实现。
+| 目录 | 分工 |
+| --- | --- |
+| `src/agents/` | 预留 Mastra Agent、提示词、Tools 和 Workflow |
+| `src/mastra/index.ts` | Mastra 实例入口，集中注册后续的 Agent 和 Workflow |
+| `src/business/` | 七个领域的查询函数和 Mock 数据，`api/` 提供统一的 Koa HTTP 接口 |
+| `src/demo/` | 场景清单和命令行预览，与 Koa 复用同一份业务数据 |
+| `qlora/` | 预留 QLoRA 底座与适配器配置 |
+| `training/` | 预留训练数据准备脚本、训练入口和评估配置 |
 
 使用 Node.js 22.18+（22.x）或 24+，在项目根目录运行：
 
@@ -68,6 +75,27 @@ npm run demo -- refund DEMO-1002
 ```
 
 `npm run demo` 列出七个场景。加场景参数可查看默认样例，再加一项可指定记录编号。预览直接读取本地样例，不需要模型、API 密钥或数据库。
+
+### 2.3 Koa 业务 Mock API
+
+`npm run dev` 启动业务应用，默认监听 `127.0.0.1:3000`。可用 `PORT=3001 npm run dev` 指定端口。七个业务接口都只读取本地样例，供后续 Mastra Tools 调用。
+
+| 方法 | 路径示例 | 返回数据 |
+| --- | --- | --- |
+| GET | `/api/v1/health` | 服务状态 |
+| GET | `/api/v1/orders/DEMO-1001` | 订单详情 |
+| GET | `/api/v1/orders/DEMO-1002/logistics` | 运单及物流轨迹 |
+| GET | `/api/v1/orders/DEMO-1001/refund` | 退款资格及预估金额 |
+| GET | `/api/v1/orders/DEMO-1001/price-protection` | 保价资格及预估差价 |
+| GET | `/api/v1/knowledge/PRINTER-A-E03` | 知识条目及出处 |
+| GET | `/api/v1/complaints/CMP-DEMO-001` | 投诉记录 |
+| GET | `/api/v1/handoffs/HOF-DEMO-001` | 转人工记录和会话上下文 |
+
+```bash
+curl -sS http://127.0.0.1:3000/api/v1/orders/DEMO-1002/logistics
+```
+
+响应统一包含 `code`、`message` 和 `data`。查询成功时 HTTP 状态为 `200`，`code` 为 `OK`。已有订单暂无物流会返回 `404 SHIPMENT_NOT_FOUND`，订单号不存在会返回 `404 ORDER_NOT_FOUND`，错误响应的 `data` 为 `null`。已查到但不符合条件的退款或保价样例仍返回 `200`，业务资格由 `data.eligibility` 表示。
 
 ## 3. 图谱是什么，用什么实现？
 
