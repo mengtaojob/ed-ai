@@ -60,6 +60,7 @@ Demo 用打印机 A 和墨盒 B 串起七个场景。以下结果以 2026 年 11
 | `src/mastra/index.ts` | Mastra 实例入口，集中注册后续的 Agent 和 Workflow |
 | `src/business/` | 七个领域的查询函数和 Mock 数据，`api/` 提供统一的 Koa HTTP 接口 |
 | `src/demo/` | 场景清单和命令行预览，与 Koa 复用同一份业务数据 |
+| [`model-services/laya/`](model-services/laya/ReadMe.md) | LAYA 本地推理服务、中文意图识别和 Node.js 调用示例 |
 | `qlora/` | 预留 QLoRA 底座与适配器配置 |
 | `training/` | 预留训练数据准备脚本、训练入口和评估配置 |
 
