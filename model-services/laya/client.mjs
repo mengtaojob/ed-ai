@@ -54,8 +54,9 @@ export const intentExamples = intentEntries.map(([intent, { example }]) => ({ in
 /** @typedef {keyof typeof intents | 'other'} Intent */
 
 /**
- * @param {string} text
- * @param {AbortSignal} [signal]
+ * 请求本地 LAYA 识别客服意图，并整理类别、置信度和模型信息。
+ * @param {string} text 待分类的用户消息。
+ * @param {AbortSignal} [signal] 调用方用于取消本次识别请求的信号。
  * @returns {Promise<{ text: string, intent: Intent, label: string, answerConfidence: number | null, model: string }>}
  */
 export async function recognizeIntent(text, signal) {

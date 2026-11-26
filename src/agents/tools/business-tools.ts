@@ -8,12 +8,17 @@ const businessResponse = z.object({
   data: z.record(z.string(), z.unknown()).nullable(),
 });
 
+/**
+ * 创建调用业务 Mock API 的只读查询工具。
+ * `id` 是工具名，`description` 说明工具用途，`path` 根据编码后的记录编号生成接口路径，`key` 定义 `recordId` 的校验规则。
+ */
 function lookupTool(id: string, description: string, path: (id: string) => string, key: z.ZodType<string>) {
   return createTool({
     id,
     description,
     inputSchema: z.object({ recordId: key }),
     outputSchema: businessResponse,
+    /** 通过业务接口查询 `recordId` 对应的记录，`context` 提供本次工具调用的取消信号。 */
     execute: async ({ recordId }, context) => {
       const timeout = AbortSignal.timeout(5_000);
       const signal = context?.abortSignal ? AbortSignal.any([context.abortSignal, timeout]) : timeout;

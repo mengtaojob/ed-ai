@@ -1,5 +1,6 @@
 import { intentExamples, recognizeIntent } from './client.mjs';
 
+/** 识别命令行传入的客服文本，未传入文本时逐条验证内置意图样例。 */
 async function runDemo() {
   const text = process.argv.slice(2).join(' ').trim();
   if (text) {

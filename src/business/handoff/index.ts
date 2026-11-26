@@ -29,6 +29,7 @@ const handoffs: readonly Handoff[] = [
   },
 ];
 
+/** 按转人工记录编号 `handoffId` 查询模拟接管状态及会话内容。 */
 export function findHandoff(handoffId: string): Handoff | undefined {
   return handoffs.find((handoff) => handoff.id === handoffId);
 }

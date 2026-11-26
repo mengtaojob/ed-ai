@@ -34,6 +34,7 @@ const shipments: readonly Shipment[] = [
   },
 ];
 
+/** 按订单号 `orderId` 查询示例运单及物流轨迹。 */
 export function findShipmentByOrderId(orderId: string): Shipment | undefined {
   return shipments.find((shipment) => shipment.orderId === orderId);
 }

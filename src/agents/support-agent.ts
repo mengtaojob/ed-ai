@@ -5,6 +5,7 @@ import { supportInstructions } from './prompts/support.ts';
 import { supportRouting } from './support-routing.ts';
 import { businessTools } from './tools/business-tools.ts';
 
+/** 组装本地客服 Agent，使用 LAYA 路由选择业务工具，由 Ollama 模型根据查询结果组织答复。 */
 export const supportAgent = new Agent({
   id: 'support-agent',
   name: '本地客服 Agent',

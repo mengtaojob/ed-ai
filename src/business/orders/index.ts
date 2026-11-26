@@ -40,6 +40,7 @@ const orders: readonly Order[] = [
   },
 ];
 
+/** 按示例订单号 `orderId` 查询订单详情。 */
 export function findOrder(orderId: string): Order | undefined {
   return orders.find((order) => order.id === orderId);
 }

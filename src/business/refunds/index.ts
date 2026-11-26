@@ -20,6 +20,7 @@ const refundExamples: readonly RefundExample[] = [
   },
 ];
 
+/** 按订单号 `orderId` 查询模拟退款资格、预估退款金额和原因。 */
 export function findRefundExample(orderId: string): RefundExample | undefined {
   return refundExamples.find((example) => example.orderId === orderId);
 }

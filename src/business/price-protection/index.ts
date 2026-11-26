@@ -23,6 +23,7 @@ const priceProtectionExamples: readonly PriceProtectionExample[] = [
   },
 ];
 
+/** 按订单号 `orderId` 查询模拟保价资格、当前售价和预估差额。 */
 export function findPriceProtectionExample(orderId: string): PriceProtectionExample | undefined {
   return priceProtectionExamples.find((example) => example.orderId === orderId);
 }

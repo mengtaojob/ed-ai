@@ -1,5 +1,6 @@
 import { demoScenarios } from './scenarios.ts';
 
+/** 按场景标识 `scenarioId` 预览本地样例，`fixtureId` 是可选的记录编号，省略时使用该场景的默认样例。未指定场景时列出所有场景。 */
 function previewScenario(scenarioId: string | undefined, fixtureId: string | undefined): void {
   if (scenarioId === undefined) {
     for (const scenario of demoScenarios) {

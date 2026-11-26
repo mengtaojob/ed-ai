@@ -18,6 +18,7 @@ const complaints: readonly Complaint[] = [
   },
 ];
 
+/** 按投诉编号 `complaintId` 查询已有的模拟投诉记录。 */
 export function findComplaint(complaintId: string): Complaint | undefined {
   return complaints.find((complaint) => complaint.id === complaintId);
 }

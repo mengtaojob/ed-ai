@@ -32,6 +32,7 @@ const articles: readonly KnowledgeArticle[] = [
   },
 ];
 
+/** 按知识条目编号 `articleId` 查询条目正文及出处。 */
 export function findKnowledgeArticle(articleId: string): KnowledgeArticle | undefined {
   return articles.find((article) => article.id === articleId);
 }
