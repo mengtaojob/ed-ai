@@ -56,8 +56,8 @@ Demo 用打印机 A 和墨盒 B 串起七个场景。以下结果以 2026 年 11
 
 | 目录 | 分工 |
 | --- | --- |
-| `src/agents/` | 预留 Mastra Agent、提示词、Tools 和 Workflow |
-| `src/mastra/index.ts` | Mastra 实例入口，集中注册后续的 Agent 和 Workflow |
+| `src/agents/` | 客服 Agent、LAYA 路由、提示词和业务 Tools，预留 Workflow |
+| `src/mastra/index.ts` | Mastra 实例入口，注册 Agent、Ollama 网关和内存存储 |
 | `src/business/` | 七个领域的查询函数和 Mock 数据，`api/` 提供统一的 Koa HTTP 接口 |
 | `src/demo/` | 场景清单和命令行预览，与 Koa 复用同一份业务数据 |
 | [`model-services/laya/`](model-services/laya/ReadMe.md) | LAYA 本地推理服务、中文意图识别和 Node.js 调用示例 |
@@ -97,6 +97,23 @@ curl -sS http://127.0.0.1:3000/api/v1/orders/DEMO-1002/logistics
 ```
 
 响应统一包含 `code`、`message` 和 `data`。查询成功时 HTTP 状态为 `200`，`code` 为 `OK`。已有订单暂无物流会返回 `404 SHIPMENT_NOT_FOUND`，订单号不存在会返回 `404 ORDER_NOT_FOUND`，错误响应的 `data` 为 `null`。已查到但不符合条件的退款或保价样例仍返回 `200`，业务资格由 `data.eligibility` 表示。
+
+### 2.4 在 Mastra Studio 运行客服 Agent
+
+先使本地 Koa、[LAYA](model-services/laya/ReadMe.md) 和 Ollama 可用，Ollama 需要安装 `qwen3.5:4b`。在项目根目录用支持的 Node.js 版本运行以下命令，打开 [Mastra Studio](http://127.0.0.1:4111) 并选择「本地客服 Agent」。
+
+```bash
+npm ci
+AUTO_BLOCK_EXTERNAL_PROVIDERS=true npm run dev:agent
+```
+
+可以先发送「帮我查一下包裹到哪儿了」，再回复「订单号是 DEMO-1002」。LAYA 处理意图，Mastra 输入处理器按意图限制可用的 Tools，Qwen 读取 Koa 的查询结果并组织回复。Studio 会显示工具调用及结果。对话历史保存在 Mastra 的进程内存中，重启服务后会清空。当前提供业务查询和资格预览。
+
+| 本地服务 | 默认地址 | 地址配置 |
+| --- | --- | --- |
+| Koa Mock | `http://127.0.0.1:3000` | `BUSINESS_MOCK_BASE_URL` |
+| LAYA | `http://127.0.0.1:8000` | `LAYA_BASE_URL` |
+| Ollama | `http://127.0.0.1:11434/v1` | `OLLAMA_OPENAI_BASE_URL` |
 
 ## 3. 图谱是什么，用什么实现？
 

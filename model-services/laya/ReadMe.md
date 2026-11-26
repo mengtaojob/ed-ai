@@ -20,7 +20,7 @@ node model-services/laya/demo.mjs
 node model-services/laya/demo.mjs '我买的墨盒已经寄出三天，快递到哪儿了？'
 ```
 
-`demo.mjs` 使用 Node.js 内置 `fetch`，通过 `POST /v1/systemone` 调用 LAYA。无参数时依次验证七个中文样例，有参数时输出该句的分类、置信分数和实际使用的模型。每次请求从七个业务意图中选一个。
+`demo.mjs` 和 Mastra Agent 共用 `client.mjs`，通过 Node.js 内置 `fetch` 调用 `POST /v1/systemone`。无参数时依次验证七个中文样例，有参数时输出该句的分类、置信分数和实际使用的模型。每次请求返回一个主意图，问候或闲聊可归为 `other`。
 
 自定义端口时在服务端设置 `LAYA_PORT`，调用端相应设置 `LAYA_BASE_URL`。如果服务端配置了 `LAYA_API_KEY`，调用端读取同名环境变量发送 Bearer 认证。
 

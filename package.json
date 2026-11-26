@@ -8,17 +8,22 @@
   },
   "scripts": {
     "dev": "node src/business/api/server.ts",
+    "dev:agent": "mastra dev",
     "demo": "node src/demo/preview.ts",
     "check": "tsc"
   },
   "dependencies": {
+    "@ai-sdk/openai-compatible": "^3.0.95",
     "@koa/router": "^15.7.1",
     "@mastra/core": "^1.86.0",
-    "koa": "^3.3.0"
+    "@mastra/memory": "^1.41.3",
+    "koa": "^3.3.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@types/koa": "^3.0.3",
     "@types/node": "^22.20.5",
+    "mastra": "^1.40.2",
     "typescript": "^5.9.3"
   }
 }
