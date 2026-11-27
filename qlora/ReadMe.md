@@ -1,6 +1,6 @@
 # 查物流 QLoRA 小试验
 
-本轮验证三件事。ShareGPT 格式能否表达真实工具调用，原模型在哪些固定请求上出错，以及 4-bit NF4 LoRA 配置能否进入短训。范围为中文物流查询。
+本试验覆盖中文物流查询。下面记录 ShareGPT 数据、Ollama 基线和 LLaMA-Factory 的 CUDA 配置。Apple Silicon 上的训练、适配器加载及前后对比见 [Mac 实跑记录](logistics-mlx.md)。
 
 ## 数据和回放
 
@@ -59,7 +59,7 @@ python3.12 training/logistics/validate.py --mock-url http://127.0.0.1:3000
 
 2026 年 11 月 27 日实测设备为 Apple Silicon、32 GiB 和 Python 3.12.16。现有 LAYA 虚拟环境里的 PyTorch 2.15.0 返回 `MPS=True`、`CUDA=False`，未找到 LLaMA-Factory CLI、bitsandbytes 或固定版 HF 权重缓存。该环境的 Transformers 5.24.1 也超过 v0.9.5 声明的上限 5.6.0。bitsandbytes 0.50.2 的官方安装文档把 macOS arm64 列在 CPU 后端。Ollama 的 MLX 推理权重和运行环境没有验证过这条 NF4 训练路径。[bitsandbytes 0.50.2 平台说明](https://huggingface.co/docs/bitsandbytes/v0.50.2/en/installation#cpu) · [LLaMA-Factory 依赖](https://github.com/hiyouga/LlamaFactory/blob/v0.9.5/pyproject.toml)
 
-**短训未开始。** 已解析两份 YAML，并核对训练和推理的模型版本、模板和量化字段。当前没有训练损失、检查点、适配器或微调后验收结果。
+**CUDA 路线已核对配置。** 两份 YAML 的模型版本、模板和量化字段已检查。RTX 4090 环境可按下面的命令跑短训。
 
 ## 在 CUDA 环境运行短训
 
