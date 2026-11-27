@@ -1,0 +1,428 @@
+{
+  "run_label": "base-ollama",
+  "timestamp_utc": "2026-11-27T09:13:03.614758+00:00",
+  "backend": "ollama",
+  "base_url": "http://127.0.0.1:11434/v1",
+  "model": "qwen3.5:4b",
+  "model_identity": {
+    "ollama_version": "0.40.18",
+    "installed_model": {
+      "name": "qwen3.5:4b",
+      "model": "qwen3.5:4b",
+      "modified_at": "2026-11-26T03:03:34.986840618+08:00",
+      "size": 3973305013,
+      "digest": "7f3251fa6878a78a606bcb3c074283306e5ad2ea411a7774a9dd98a4bc7f2d13",
+      "details": {
+        "parent_model": "",
+        "format": "safetensors",
+        "family": "",
+        "families": null,
+        "parameter_size": "",
+        "quantization_level": "nvfp4",
+        "runner": "mlx"
+      },
+      "capabilities": [
+        "completion",
+        "vision",
+        "thinking",
+        "tools"
+      ]
+    }
+  },
+  "acceptance_sha256": "56d196cbb2bf885248a6b79c9e586e7dc906d5f3500ea66348d819954585eac7",
+  "generation": {
+    "temperature": 0,
+    "top_p": 1,
+    "max_tokens": 256,
+    "stream": false,
+    "seed": 42,
+    "reasoning_effort": "none"
+  },
+  "summary": {
+    "cases": 10,
+    "clarification_cases": 2,
+    "clarification_pass": 2,
+    "tool_name_pass": 9,
+    "parameters_pass": 9,
+    "tool_call_pass": 9,
+    "faithful_by_rules": 9,
+    "cases_with_suspected_eta": 1
+  },
+  "results": [
+    {
+      "case_id": "a01-signed",
+      "category": "delivered",
+      "source": "mock_http",
+      "expected_call": {
+        "name": "lookup_logistics",
+        "arguments": {
+          "recordId": "DEMO-1001"
+        }
+      },
+      "clarification": null,
+      "call": {
+        "text": "",
+        "tool_calls": [
+          {
+            "id": "call_iq7jrvui",
+            "index": 0,
+            "type": "function",
+            "function": {
+              "name": "lookup_logistics",
+              "arguments": "{\"recordId\":\"DEMO-1001\"}"
+            }
+          }
+        ],
+        "finish_reason": "tool_calls"
+      },
+      "tool_name_correct": true,
+      "parameters_correct": true,
+      "replay_reply": {
+        "text": "您好，根据系统记录，您的订单 DEMO-1001 已于 2026 年 11 月 21 日 14:30 被签收。您可以联系收件人确认是否已收到包裹。",
+        "tool_calls": [],
+        "finish_reason": "stop"
+      },
+      "faithful_by_rules": true,
+      "suspected_eta_claims": [],
+      "review_notes": []
+    },
+    {
+      "case_id": "a02-transit",
+      "category": "in_transit",
+      "source": "mock_http",
+      "expected_call": {
+        "name": "lookup_logistics",
+        "arguments": {
+          "recordId": "DEMO-1002"
+        }
+      },
+      "clarification": null,
+      "call": {
+        "text": "",
+        "tool_calls": [
+          {
+            "id": "call_7c09jai5",
+            "index": 0,
+            "type": "function",
+            "function": {
+              "name": "lookup_logistics",
+              "arguments": "{\"recordId\":\"DEMO-1002\"}"
+            }
+          }
+        ],
+        "finish_reason": "tool_calls"
+      },
+      "tool_name_correct": true,
+      "parameters_correct": true,
+      "replay_reply": {
+        "text": "您的订单 DEMO-1002 目前处于运输中。\n\n最新物流轨迹如下：\n*   2026-11-21 已揽收\n*   2026-11-24 包裹到达配送站，等待派送\n\n运单号是：TRACK-DEMO-1002",
+        "tool_calls": [],
+        "finish_reason": "stop"
+      },
+      "faithful_by_rules": true,
+      "suspected_eta_claims": [],
+      "review_notes": []
+    },
+    {
+      "case_id": "a03-no-shipment",
+      "category": "no_shipment",
+      "source": "mock_http",
+      "expected_call": {
+        "name": "lookup_logistics",
+        "arguments": {
+          "recordId": "DEMO-1003"
+        }
+      },
+      "clarification": null,
+      "call": {
+        "text": "",
+        "tool_calls": [
+          {
+            "id": "call_dokure55",
+            "index": 0,
+            "type": "function",
+            "function": {
+              "name": "lookup_logistics",
+              "arguments": "{\"recordId\":\"DEMO-1003\"}"
+            }
+          }
+        ],
+        "finish_reason": "tool_calls"
+      },
+      "tool_name_correct": true,
+      "parameters_correct": true,
+      "replay_reply": {
+        "text": "抱歉，系统显示该订单目前暂无物流记录。",
+        "tool_calls": [],
+        "finish_reason": "stop"
+      },
+      "faithful_by_rules": true,
+      "suspected_eta_claims": [],
+      "review_notes": []
+    },
+    {
+      "case_id": "a04-unknown",
+      "category": "order_missing",
+      "source": "mock_http",
+      "expected_call": {
+        "name": "lookup_logistics",
+        "arguments": {
+          "recordId": "DEMO-9999"
+        }
+      },
+      "clarification": null,
+      "call": {
+        "text": "好的，请稍等，我帮您查询一下。",
+        "tool_calls": [
+          {
+            "id": "call_lk1og1ka",
+            "index": 0,
+            "type": "function",
+            "function": {
+              "name": "lookup_logistics",
+              "arguments": "{\"recordId\":\"DEMO-9999\"}"
+            }
+          }
+        ],
+        "finish_reason": "tool_calls"
+      },
+      "tool_name_correct": true,
+      "parameters_correct": true,
+      "replay_reply": {
+        "text": "抱歉，系统中未找到订单 DEMO-9999。请您核对订单号后再次查询。",
+        "tool_calls": [],
+        "finish_reason": "stop"
+      },
+      "faithful_by_rules": true,
+      "suspected_eta_claims": [],
+      "review_notes": []
+    },
+    {
+      "case_id": "a05-unavailable",
+      "category": "unavailable",
+      "source": "tool_fallback",
+      "expected_call": {
+        "name": "lookup_logistics",
+        "arguments": {
+          "recordId": "DEMO-9931"
+        }
+      },
+      "clarification": null,
+      "call": {
+        "text": "",
+        "tool_calls": [
+          {
+            "id": "call_ccv8y2a9",
+            "index": 0,
+            "type": "function",
+            "function": {
+              "name": "lookup_logistics",
+              "arguments": "{\"recordId\":\"DEMO-9931\"}"
+            }
+          }
+        ],
+        "finish_reason": "tool_calls"
+      },
+      "tool_name_correct": true,
+      "parameters_correct": true,
+      "replay_reply": {
+        "text": "抱歉，目前该订单的物流信息暂时无法查询，请稍后再试。",
+        "tool_calls": [],
+        "finish_reason": "stop"
+      },
+      "faithful_by_rules": true,
+      "suspected_eta_claims": [],
+      "review_notes": []
+    },
+    {
+      "case_id": "a06-eta-mock",
+      "category": "eta_unknown",
+      "source": "mock_http",
+      "expected_call": {
+        "name": "lookup_logistics",
+        "arguments": {
+          "recordId": "DEMO-1002"
+        }
+      },
+      "clarification": null,
+      "call": {
+        "text": "抱歉，我无法确认您的订单能否在傍晚前送达。目前该订单暂无物流记录，无法查询具体派送时间。建议您稍后再试或联系门店咨询。",
+        "tool_calls": [],
+        "finish_reason": "stop"
+      },
+      "tool_name_correct": false,
+      "parameters_correct": false,
+      "replay_reply": {
+        "text": "DEMO-1002 目前状态是“包裹到达配送站，等待派送”，预计会在傍晚前送到。",
+        "tool_calls": [],
+        "finish_reason": "stop"
+      },
+      "faithful_by_rules": false,
+      "suspected_eta_claims": [
+        "预计会在傍晚前送到"
+      ],
+      "review_notes": [
+        "回复未明确表达该场景的状态",
+        "出现疑似未经工具证实的预计送达时间"
+      ]
+    },
+    {
+      "case_id": "a07-clarify",
+      "category": "delivered",
+      "source": "mock_http",
+      "expected_call": {
+        "name": "lookup_logistics",
+        "arguments": {
+          "recordId": "DEMO-1001"
+        }
+      },
+      "clarification": {
+        "text": "您好，请问您的订单号是多少呢？（格式为 DEMO-数字）",
+        "tool_calls": [],
+        "finish_reason": "stop",
+        "pass": true
+      },
+      "call": {
+        "text": "",
+        "tool_calls": [
+          {
+            "id": "call_9d8hulfq",
+            "index": 0,
+            "type": "function",
+            "function": {
+              "name": "lookup_logistics",
+              "arguments": "{\"recordId\":\"DEMO-1001\"}"
+            }
+          }
+        ],
+        "finish_reason": "tool_calls"
+      },
+      "tool_name_correct": true,
+      "parameters_correct": true,
+      "replay_reply": {
+        "text": "您的订单DEMO-1001显示**已签收**。物流轨迹如下：\n*   2026年11月19日：快递已揽收\n*   2026年11月21日：包裹已签收",
+        "tool_calls": [],
+        "finish_reason": "stop"
+      },
+      "faithful_by_rules": true,
+      "suspected_eta_claims": [],
+      "review_notes": []
+    },
+    {
+      "case_id": "a08-clarify-empty",
+      "category": "no_shipment",
+      "source": "synthetic",
+      "expected_call": {
+        "name": "lookup_logistics",
+        "arguments": {
+          "recordId": "DEMO-7901"
+        }
+      },
+      "clarification": {
+        "text": "您好，请问您的订单号是多少呢？（格式为 DEMO-数字）",
+        "tool_calls": [],
+        "finish_reason": "stop",
+        "pass": true
+      },
+      "call": {
+        "text": "",
+        "tool_calls": [
+          {
+            "id": "call_afs1flvm",
+            "index": 0,
+            "type": "function",
+            "function": {
+              "name": "lookup_logistics",
+              "arguments": "{\"recordId\":\"DEMO-7901\"}"
+            }
+          }
+        ],
+        "finish_reason": "tool_calls"
+      },
+      "tool_name_correct": true,
+      "parameters_correct": true,
+      "replay_reply": {
+        "text": "抱歉，该订单目前暂无物流记录。",
+        "tool_calls": [],
+        "finish_reason": "stop"
+      },
+      "faithful_by_rules": true,
+      "suspected_eta_claims": [],
+      "review_notes": []
+    },
+    {
+      "case_id": "a09-eta-offline",
+      "category": "eta_unknown",
+      "source": "synthetic",
+      "expected_call": {
+        "name": "lookup_logistics",
+        "arguments": {
+          "recordId": "DEMO-7902"
+        }
+      },
+      "clarification": null,
+      "call": {
+        "text": "好的，我帮您查询一下订单 **DEMO-7902** 的最新物流进度。",
+        "tool_calls": [
+          {
+            "id": "call_3l5pzcp0",
+            "index": 0,
+            "type": "function",
+            "function": {
+              "name": "lookup_logistics",
+              "arguments": "{\"recordId\":\"DEMO-7902\"}"
+            }
+          }
+        ],
+        "finish_reason": "tool_calls"
+      },
+      "tool_name_correct": true,
+      "parameters_correct": true,
+      "replay_reply": {
+        "text": "DEMO-7902 的运单目前显示“运输中”，最新轨迹是“包裹已到转运中心”。系统暂未提供预计送达时间，无法确认周末能否收到。",
+        "tool_calls": [],
+        "finish_reason": "stop"
+      },
+      "faithful_by_rules": true,
+      "suspected_eta_claims": [],
+      "review_notes": []
+    },
+    {
+      "case_id": "a10-synthetic-track",
+      "category": "in_transit",
+      "source": "synthetic",
+      "expected_call": {
+        "name": "lookup_logistics",
+        "arguments": {
+          "recordId": "DEMO-7903"
+        }
+      },
+      "clarification": null,
+      "call": {
+        "text": "",
+        "tool_calls": [
+          {
+            "id": "call_2rnqsf8w",
+            "index": 0,
+            "type": "function",
+            "function": {
+              "name": "lookup_logistics",
+              "arguments": "{\"recordId\":\"DEMO-7903\"}"
+            }
+          }
+        ],
+        "finish_reason": "tool_calls"
+      },
+      "tool_name_correct": true,
+      "parameters_correct": true,
+      "replay_reply": {
+        "text": "DEMO-7903 的运单号是 TRACK-DEMO-7903。\n\n目前状态为运输中：\n1. 2026年11月2日 已揽收\n2. 2026年11月4日 包裹到达配送站，等待派送",
+        "tool_calls": [],
+        "finish_reason": "stop"
+      },
+      "faithful_by_rules": true,
+      "suspected_eta_claims": [],
+      "review_notes": []
+    }
+  ]
+}

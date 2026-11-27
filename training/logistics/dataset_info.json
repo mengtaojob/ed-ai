@@ -1,0 +1,36 @@
+{
+  "logistics_train": {
+    "file_name": "train.json",
+    "formatting": "sharegpt",
+    "columns": {
+      "messages": "conversations",
+      "system": "system",
+      "tools": "tools"
+    },
+    "tags": {
+      "role_tag": "from",
+      "content_tag": "value",
+      "user_tag": "human",
+      "assistant_tag": "gpt",
+      "function_tag": "function_call",
+      "observation_tag": "observation"
+    }
+  },
+  "logistics_validation": {
+    "file_name": "validation.json",
+    "formatting": "sharegpt",
+    "columns": {
+      "messages": "conversations",
+      "system": "system",
+      "tools": "tools"
+    },
+    "tags": {
+      "role_tag": "from",
+      "content_tag": "value",
+      "user_tag": "human",
+      "assistant_tag": "gpt",
+      "function_tag": "function_call",
+      "observation_tag": "observation"
+    }
+  }
+}

@@ -1,0 +1,12 @@
+# 用同一后端评估 HF 原模型与适配器。加载适配器时从命令行传 adapter_name_or_path。
+model_name_or_path: Qwen/Qwen3.5-4B
+model_revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+cache_dir: qlora/output/hf-cache
+template: qwen3_5_nothink
+finetuning_type: lora
+infer_backend: huggingface
+infer_dtype: bfloat16
+quantization_method: bnb
+quantization_bit: 4
+quantization_type: nf4
+double_quantization: true

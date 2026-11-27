@@ -1,0 +1,53 @@
+# 从项目根目录运行。这里用固定版本的 Hugging Face 对话模型作为底座。
+model_name_or_path: Qwen/Qwen3.5-4B
+model_revision: 851bf6e806efd8d0a36b00ddf55e13ccb7b8cd0a
+cache_dir: qlora/output/hf-cache
+
+# 4-bit NF4 底座保持冻结，只更新注意力的 Q/V LoRA 参数。
+stage: sft
+do_train: true
+do_eval: true
+finetuning_type: lora
+lora_target: q_proj,v_proj
+lora_rank: 8
+lora_alpha: 16
+lora_dropout: 0.0
+quantization_method: bnb
+quantization_bit: 4
+quantization_type: nf4
+double_quantization: true
+freeze_vision_tower: true
+freeze_multi_modal_projector: true
+
+# 验收集从不出现在这个配置里。计算 loss 时保留多轮客服回复和工具调用。
+dataset_dir: training/logistics
+dataset: logistics_train
+eval_dataset: logistics_validation
+template: qwen3_5_nothink
+cutoff_len: 1024
+train_on_prompt: false
+mask_history: false
+overwrite_cache: true
+preprocessing_num_workers: 1
+dataloader_num_workers: 0
+
+# 单卡短训。第 6、12、18 步各保存一次，以便检查和恢复。
+output_dir: qlora/output/logistics-sft
+per_device_train_batch_size: 1
+per_device_eval_batch_size: 1
+gradient_accumulation_steps: 1
+max_steps: 18
+learning_rate: 0.0001
+lr_scheduler_type: constant
+optim: adamw_torch
+bf16: true
+seed: 42
+data_seed: 42
+logging_steps: 1
+save_strategy: steps
+save_steps: 6
+save_total_limit: 3
+save_only_model: false
+eval_strategy: steps
+eval_steps: 6
+report_to: none

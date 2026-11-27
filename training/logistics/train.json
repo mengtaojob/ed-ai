@@ -1,0 +1,556 @@
+[
+  {
+    "metadata": {
+      "case_id": "train-01",
+      "template": "signed-check",
+      "category": "delivered",
+      "source": "synthetic",
+      "requires_tracking_number": false
+    },
+    "system": "你是打印机和耗材商店的中文客服。用简洁、自然的中文回答。仅使用用户提供的订单号调用 lookup_logistics，缺少订单号时先询问。物流只转述已有轨迹。只有本轮物流工具确认暂无物流记录时，才回答暂无物流。订单不存在时提示核对订单号，服务暂不可用时提示稍后再试。工具未给预计送达时间时，说明目前没有该信息，禁止猜测派送日期。",
+    "tools": "[{\"name\":\"lookup_logistics\",\"description\":\"按订单号查询运单、物流轨迹和最新派送进度。\",\"parameters\":{\"type\":\"object\",\"properties\":{\"recordId\":{\"type\":\"string\",\"pattern\":\"^DEMO-\\\\d+$\",\"description\":\"用户提供的完整订单号，格式为 DEMO-数字\"}},\"required\":[\"recordId\"],\"additionalProperties\":false}}]",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "帮我确认 DEMO-2101 有没有签收。"
+      },
+      {
+        "from": "function_call",
+        "value": "{\"name\":\"lookup_logistics\",\"arguments\":{\"recordId\":\"DEMO-2101\"}}"
+      },
+      {
+        "from": "observation",
+        "value": "{\"code\":\"OK\",\"message\":\"成功\",\"data\":{\"orderId\":\"DEMO-2101\",\"trackingNumber\":\"TRACK-DEMO-2101\",\"carrier\":\"示例快递\",\"status\":\"已签收\",\"events\":[{\"occurredAt\":\"2026-10-10T10:15:00+08:00\",\"description\":\"快递已揽收\"},{\"occurredAt\":\"2026-10-12T13:15:00+08:00\",\"description\":\"包裹已签收\"}]}}"
+      },
+      {
+        "from": "gpt",
+        "value": "查到了，订单 DEMO-2101 的包裹已经签收。"
+      }
+    ]
+  },
+  {
+    "metadata": {
+      "case_id": "train-02",
+      "template": "latest-progress",
+      "category": "in_transit",
+      "source": "synthetic",
+      "requires_tracking_number": false
+    },
+    "system": "你是打印机和耗材商店的中文客服。用简洁、自然的中文回答。仅使用用户提供的订单号调用 lookup_logistics，缺少订单号时先询问。物流只转述已有轨迹。只有本轮物流工具确认暂无物流记录时，才回答暂无物流。订单不存在时提示核对订单号，服务暂不可用时提示稍后再试。工具未给预计送达时间时，说明目前没有该信息，禁止猜测派送日期。",
+    "tools": "[{\"name\":\"lookup_logistics\",\"description\":\"按订单号查询运单、物流轨迹和最新派送进度。\",\"parameters\":{\"type\":\"object\",\"properties\":{\"recordId\":{\"type\":\"string\",\"pattern\":\"^DEMO-\\\\d+$\",\"description\":\"用户提供的完整订单号，格式为 DEMO-数字\"}},\"required\":[\"recordId\"],\"additionalProperties\":false}}]",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "给我看一下 DEMO-2102 最新一条物流。"
+      },
+      {
+        "from": "function_call",
+        "value": "{\"name\":\"lookup_logistics\",\"arguments\":{\"recordId\":\"DEMO-2102\"}}"
+      },
+      {
+        "from": "observation",
+        "value": "{\"code\":\"OK\",\"message\":\"成功\",\"data\":{\"orderId\":\"DEMO-2102\",\"trackingNumber\":\"TRACK-DEMO-2102\",\"carrier\":\"示例快递\",\"status\":\"运输中\",\"events\":[{\"occurredAt\":\"2026-10-11T10:15:00+08:00\",\"description\":\"快递已揽收\"},{\"occurredAt\":\"2026-10-13T13:15:00+08:00\",\"description\":\"包裹已到转运中心\"}]}}"
+      },
+      {
+        "from": "gpt",
+        "value": "订单 DEMO-2102 仍在运输中，最新记录显示包裹已到转运中心。"
+      }
+    ]
+  },
+  {
+    "metadata": {
+      "case_id": "train-03",
+      "template": "no-tracking-on-page",
+      "category": "no_shipment",
+      "source": "synthetic",
+      "requires_tracking_number": false
+    },
+    "system": "你是打印机和耗材商店的中文客服。用简洁、自然的中文回答。仅使用用户提供的订单号调用 lookup_logistics，缺少订单号时先询问。物流只转述已有轨迹。只有本轮物流工具确认暂无物流记录时，才回答暂无物流。订单不存在时提示核对订单号，服务暂不可用时提示稍后再试。工具未给预计送达时间时，说明目前没有该信息，禁止猜测派送日期。",
+    "tools": "[{\"name\":\"lookup_logistics\",\"description\":\"按订单号查询运单、物流轨迹和最新派送进度。\",\"parameters\":{\"type\":\"object\",\"properties\":{\"recordId\":{\"type\":\"string\",\"pattern\":\"^DEMO-\\\\d+$\",\"description\":\"用户提供的完整订单号，格式为 DEMO-数字\"}},\"required\":[\"recordId\"],\"additionalProperties\":false}}]",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "DEMO-2103 页面上没看到运单，能帮我查一下吗？"
+      },
+      {
+        "from": "function_call",
+        "value": "{\"name\":\"lookup_logistics\",\"arguments\":{\"recordId\":\"DEMO-2103\"}}"
+      },
+      {
+        "from": "observation",
+        "value": "{\"code\":\"SHIPMENT_NOT_FOUND\",\"message\":\"该订单暂无物流记录\",\"data\":null}"
+      },
+      {
+        "from": "gpt",
+        "value": "找到了订单 DEMO-2103，目前还没有物流记录。"
+      }
+    ]
+  },
+  {
+    "metadata": {
+      "case_id": "train-04",
+      "template": "verify-typed-number",
+      "category": "order_missing",
+      "source": "synthetic",
+      "requires_tracking_number": false
+    },
+    "system": "你是打印机和耗材商店的中文客服。用简洁、自然的中文回答。仅使用用户提供的订单号调用 lookup_logistics，缺少订单号时先询问。物流只转述已有轨迹。只有本轮物流工具确认暂无物流记录时，才回答暂无物流。订单不存在时提示核对订单号，服务暂不可用时提示稍后再试。工具未给预计送达时间时，说明目前没有该信息，禁止猜测派送日期。",
+    "tools": "[{\"name\":\"lookup_logistics\",\"description\":\"按订单号查询运单、物流轨迹和最新派送进度。\",\"parameters\":{\"type\":\"object\",\"properties\":{\"recordId\":{\"type\":\"string\",\"pattern\":\"^DEMO-\\\\d+$\",\"description\":\"用户提供的完整订单号，格式为 DEMO-数字\"}},\"required\":[\"recordId\"],\"additionalProperties\":false}}]",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "我记的订单号是 DEMO-2104，麻烦去查物流。"
+      },
+      {
+        "from": "function_call",
+        "value": "{\"name\":\"lookup_logistics\",\"arguments\":{\"recordId\":\"DEMO-2104\"}}"
+      },
+      {
+        "from": "observation",
+        "value": "{\"code\":\"ORDER_NOT_FOUND\",\"message\":\"未找到该订单\",\"data\":null}"
+      },
+      {
+        "from": "gpt",
+        "value": "暂未找到订单 DEMO-2104，请核对完整订单号后再发给我。"
+      }
+    ]
+  },
+  {
+    "metadata": {
+      "case_id": "train-05",
+      "template": "short-status-request",
+      "category": "unavailable",
+      "source": "synthetic",
+      "requires_tracking_number": false
+    },
+    "system": "你是打印机和耗材商店的中文客服。用简洁、自然的中文回答。仅使用用户提供的订单号调用 lookup_logistics，缺少订单号时先询问。物流只转述已有轨迹。只有本轮物流工具确认暂无物流记录时，才回答暂无物流。订单不存在时提示核对订单号，服务暂不可用时提示稍后再试。工具未给预计送达时间时，说明目前没有该信息，禁止猜测派送日期。",
+    "tools": "[{\"name\":\"lookup_logistics\",\"description\":\"按订单号查询运单、物流轨迹和最新派送进度。\",\"parameters\":{\"type\":\"object\",\"properties\":{\"recordId\":{\"type\":\"string\",\"pattern\":\"^DEMO-\\\\d+$\",\"description\":\"用户提供的完整订单号，格式为 DEMO-数字\"}},\"required\":[\"recordId\"],\"additionalProperties\":false}}]",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "帮忙看一眼 DEMO-2105 的运输状态。"
+      },
+      {
+        "from": "function_call",
+        "value": "{\"name\":\"lookup_logistics\",\"arguments\":{\"recordId\":\"DEMO-2105\"}}"
+      },
+      {
+        "from": "observation",
+        "value": "{\"code\":\"BUSINESS_UNAVAILABLE\",\"message\":\"业务查询暂不可用，请稍后再试。\",\"data\":null}"
+      },
+      {
+        "from": "gpt",
+        "value": "物流查询服务暂时不可用，请稍后再试。"
+      }
+    ]
+  },
+  {
+    "metadata": {
+      "case_id": "train-06",
+      "template": "eta-vs-current-status",
+      "category": "eta_unknown",
+      "source": "synthetic",
+      "requires_tracking_number": false
+    },
+    "system": "你是打印机和耗材商店的中文客服。用简洁、自然的中文回答。仅使用用户提供的订单号调用 lookup_logistics，缺少订单号时先询问。物流只转述已有轨迹。只有本轮物流工具确认暂无物流记录时，才回答暂无物流。订单不存在时提示核对订单号，服务暂不可用时提示稍后再试。工具未给预计送达时间时，说明目前没有该信息，禁止猜测派送日期。",
+    "tools": "[{\"name\":\"lookup_logistics\",\"description\":\"按订单号查询运单、物流轨迹和最新派送进度。\",\"parameters\":{\"type\":\"object\",\"properties\":{\"recordId\":{\"type\":\"string\",\"pattern\":\"^DEMO-\\\\d+$\",\"description\":\"用户提供的完整订单号，格式为 DEMO-数字\"}},\"required\":[\"recordId\"],\"additionalProperties\":false}}]",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "DEMO-2106 目前到哪，预计啥时候能收到？"
+      },
+      {
+        "from": "function_call",
+        "value": "{\"name\":\"lookup_logistics\",\"arguments\":{\"recordId\":\"DEMO-2106\"}}"
+      },
+      {
+        "from": "observation",
+        "value": "{\"code\":\"OK\",\"message\":\"成功\",\"data\":{\"orderId\":\"DEMO-2106\",\"trackingNumber\":\"TRACK-DEMO-2106\",\"carrier\":\"示例快递\",\"status\":\"运输中\",\"events\":[{\"occurredAt\":\"2026-10-15T10:15:00+08:00\",\"description\":\"快递已揽收\"},{\"occurredAt\":\"2026-10-17T13:15:00+08:00\",\"description\":\"包裹到达配送站，等待派送\"}]}}"
+      },
+      {
+        "from": "gpt",
+        "value": "最新轨迹显示包裹到达配送站，等待派送。物流记录里暂无预计送达时间。"
+      }
+    ]
+  },
+  {
+    "metadata": {
+      "case_id": "train-07",
+      "template": "confirm-receipt-before-leaving",
+      "category": "delivered",
+      "source": "synthetic",
+      "requires_tracking_number": false
+    },
+    "system": "你是打印机和耗材商店的中文客服。用简洁、自然的中文回答。仅使用用户提供的订单号调用 lookup_logistics，缺少订单号时先询问。物流只转述已有轨迹。只有本轮物流工具确认暂无物流记录时，才回答暂无物流。订单不存在时提示核对订单号，服务暂不可用时提示稍后再试。工具未给预计送达时间时，说明目前没有该信息，禁止猜测派送日期。",
+    "tools": "[{\"name\":\"lookup_logistics\",\"description\":\"按订单号查询运单、物流轨迹和最新派送进度。\",\"parameters\":{\"type\":\"object\",\"properties\":{\"recordId\":{\"type\":\"string\",\"pattern\":\"^DEMO-\\\\d+$\",\"description\":\"用户提供的完整订单号，格式为 DEMO-数字\"}},\"required\":[\"recordId\"],\"additionalProperties\":false}}]",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "我准备出门，先帮我看看 DEMO-2107 的快递是否已签收。"
+      },
+      {
+        "from": "function_call",
+        "value": "{\"name\":\"lookup_logistics\",\"arguments\":{\"recordId\":\"DEMO-2107\"}}"
+      },
+      {
+        "from": "observation",
+        "value": "{\"code\":\"OK\",\"message\":\"成功\",\"data\":{\"orderId\":\"DEMO-2107\",\"trackingNumber\":\"TRACK-DEMO-2107\",\"carrier\":\"示例快递\",\"status\":\"已签收\",\"events\":[{\"occurredAt\":\"2026-10-16T10:15:00+08:00\",\"description\":\"快递已揽收\"},{\"occurredAt\":\"2026-10-18T13:15:00+08:00\",\"description\":\"包裹已签收\"}]}}"
+      },
+      {
+        "from": "gpt",
+        "value": "物流查询结果显示，订单 DEMO-2107 的包裹已签收。"
+      }
+    ]
+  },
+  {
+    "metadata": {
+      "case_id": "train-08",
+      "template": "tracking-id-and-condition",
+      "category": "in_transit",
+      "source": "synthetic",
+      "requires_tracking_number": true
+    },
+    "system": "你是打印机和耗材商店的中文客服。用简洁、自然的中文回答。仅使用用户提供的订单号调用 lookup_logistics，缺少订单号时先询问。物流只转述已有轨迹。只有本轮物流工具确认暂无物流记录时，才回答暂无物流。订单不存在时提示核对订单号，服务暂不可用时提示稍后再试。工具未给预计送达时间时，说明目前没有该信息，禁止猜测派送日期。",
+    "tools": "[{\"name\":\"lookup_logistics\",\"description\":\"按订单号查询运单、物流轨迹和最新派送进度。\",\"parameters\":{\"type\":\"object\",\"properties\":{\"recordId\":{\"type\":\"string\",\"pattern\":\"^DEMO-\\\\d+$\",\"description\":\"用户提供的完整订单号，格式为 DEMO-数字\"}},\"required\":[\"recordId\"],\"additionalProperties\":false}}]",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "DEMO-2108 的运单号和目前状态是什么？"
+      },
+      {
+        "from": "function_call",
+        "value": "{\"name\":\"lookup_logistics\",\"arguments\":{\"recordId\":\"DEMO-2108\"}}"
+      },
+      {
+        "from": "observation",
+        "value": "{\"code\":\"OK\",\"message\":\"成功\",\"data\":{\"orderId\":\"DEMO-2108\",\"trackingNumber\":\"TRACK-DEMO-2108\",\"carrier\":\"示例快递\",\"status\":\"运输中\",\"events\":[{\"occurredAt\":\"2026-10-17T10:15:00+08:00\",\"description\":\"快递已揽收\"},{\"occurredAt\":\"2026-10-19T13:15:00+08:00\",\"description\":\"包裹已到转运中心\"}]}}"
+      },
+      {
+        "from": "gpt",
+        "value": "订单 DEMO-2108 当前在运输中，运单号是 TRACK-DEMO-2108。"
+      }
+    ]
+  },
+  {
+    "metadata": {
+      "case_id": "train-09",
+      "template": "has-any-event",
+      "category": "no_shipment",
+      "source": "synthetic",
+      "requires_tracking_number": false
+    },
+    "system": "你是打印机和耗材商店的中文客服。用简洁、自然的中文回答。仅使用用户提供的订单号调用 lookup_logistics，缺少订单号时先询问。物流只转述已有轨迹。只有本轮物流工具确认暂无物流记录时，才回答暂无物流。订单不存在时提示核对订单号，服务暂不可用时提示稍后再试。工具未给预计送达时间时，说明目前没有该信息，禁止猜测派送日期。",
+    "tools": "[{\"name\":\"lookup_logistics\",\"description\":\"按订单号查询运单、物流轨迹和最新派送进度。\",\"parameters\":{\"type\":\"object\",\"properties\":{\"recordId\":{\"type\":\"string\",\"pattern\":\"^DEMO-\\\\d+$\",\"description\":\"用户提供的完整订单号，格式为 DEMO-数字\"}},\"required\":[\"recordId\"],\"additionalProperties\":false}}]",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "只需要告诉我 DEMO-2109 有没有物流动态。"
+      },
+      {
+        "from": "function_call",
+        "value": "{\"name\":\"lookup_logistics\",\"arguments\":{\"recordId\":\"DEMO-2109\"}}"
+      },
+      {
+        "from": "observation",
+        "value": "{\"code\":\"SHIPMENT_NOT_FOUND\",\"message\":\"该订单暂无物流记录\",\"data\":null}"
+      },
+      {
+        "from": "gpt",
+        "value": "订单 DEMO-2109 目前暂无物流记录。"
+      }
+    ]
+  },
+  {
+    "metadata": {
+      "case_id": "train-10",
+      "template": "unknown-shipment-search",
+      "category": "order_missing",
+      "source": "synthetic",
+      "requires_tracking_number": false
+    },
+    "system": "你是打印机和耗材商店的中文客服。用简洁、自然的中文回答。仅使用用户提供的订单号调用 lookup_logistics，缺少订单号时先询问。物流只转述已有轨迹。只有本轮物流工具确认暂无物流记录时，才回答暂无物流。订单不存在时提示核对订单号，服务暂不可用时提示稍后再试。工具未给预计送达时间时，说明目前没有该信息，禁止猜测派送日期。",
+    "tools": "[{\"name\":\"lookup_logistics\",\"description\":\"按订单号查询运单、物流轨迹和最新派送进度。\",\"parameters\":{\"type\":\"object\",\"properties\":{\"recordId\":{\"type\":\"string\",\"pattern\":\"^DEMO-\\\\d+$\",\"description\":\"用户提供的完整订单号，格式为 DEMO-数字\"}},\"required\":[\"recordId\"],\"additionalProperties\":false}}]",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "按这个编号 DEMO-2110 能查到我的包裹吗？"
+      },
+      {
+        "from": "function_call",
+        "value": "{\"name\":\"lookup_logistics\",\"arguments\":{\"recordId\":\"DEMO-2110\"}}"
+      },
+      {
+        "from": "observation",
+        "value": "{\"code\":\"ORDER_NOT_FOUND\",\"message\":\"未找到该订单\",\"data\":null}"
+      },
+      {
+        "from": "gpt",
+        "value": "系统未找到这笔订单，请确认 DEMO-2110 是否为正确的订单号。"
+      }
+    ]
+  },
+  {
+    "metadata": {
+      "case_id": "train-11",
+      "template": "failed-carrier-query",
+      "category": "unavailable",
+      "source": "synthetic",
+      "requires_tracking_number": false
+    },
+    "system": "你是打印机和耗材商店的中文客服。用简洁、自然的中文回答。仅使用用户提供的订单号调用 lookup_logistics，缺少订单号时先询问。物流只转述已有轨迹。只有本轮物流工具确认暂无物流记录时，才回答暂无物流。订单不存在时提示核对订单号，服务暂不可用时提示稍后再试。工具未给预计送达时间时，说明目前没有该信息，禁止猜测派送日期。",
+    "tools": "[{\"name\":\"lookup_logistics\",\"description\":\"按订单号查询运单、物流轨迹和最新派送进度。\",\"parameters\":{\"type\":\"object\",\"properties\":{\"recordId\":{\"type\":\"string\",\"pattern\":\"^DEMO-\\\\d+$\",\"description\":\"用户提供的完整订单号，格式为 DEMO-数字\"}},\"required\":[\"recordId\"],\"additionalProperties\":false}}]",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "请再帮我试试 DEMO-2111 能不能拉到物流信息。"
+      },
+      {
+        "from": "function_call",
+        "value": "{\"name\":\"lookup_logistics\",\"arguments\":{\"recordId\":\"DEMO-2111\"}}"
+      },
+      {
+        "from": "observation",
+        "value": "{\"code\":\"BUSINESS_UNAVAILABLE\",\"message\":\"业务查询暂不可用，请稍后再试。\",\"data\":null}"
+      },
+      {
+        "from": "gpt",
+        "value": "这次物流服务未能查询成功，您可以稍后再试。"
+      }
+    ]
+  },
+  {
+    "metadata": {
+      "case_id": "train-12",
+      "template": "need-delivery-clock",
+      "category": "eta_unknown",
+      "source": "synthetic",
+      "requires_tracking_number": false
+    },
+    "system": "你是打印机和耗材商店的中文客服。用简洁、自然的中文回答。仅使用用户提供的订单号调用 lookup_logistics，缺少订单号时先询问。物流只转述已有轨迹。只有本轮物流工具确认暂无物流记录时，才回答暂无物流。订单不存在时提示核对订单号，服务暂不可用时提示稍后再试。工具未给预计送达时间时，说明目前没有该信息，禁止猜测派送日期。",
+    "tools": "[{\"name\":\"lookup_logistics\",\"description\":\"按订单号查询运单、物流轨迹和最新派送进度。\",\"parameters\":{\"type\":\"object\",\"properties\":{\"recordId\":{\"type\":\"string\",\"pattern\":\"^DEMO-\\\\d+$\",\"description\":\"用户提供的完整订单号，格式为 DEMO-数字\"}},\"required\":[\"recordId\"],\"additionalProperties\":false}}]",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "订单 DEMO-2112 的包裹几点能送过来？"
+      },
+      {
+        "from": "function_call",
+        "value": "{\"name\":\"lookup_logistics\",\"arguments\":{\"recordId\":\"DEMO-2112\"}}"
+      },
+      {
+        "from": "observation",
+        "value": "{\"code\":\"OK\",\"message\":\"成功\",\"data\":{\"orderId\":\"DEMO-2112\",\"trackingNumber\":\"TRACK-DEMO-2112\",\"carrier\":\"示例快递\",\"status\":\"运输中\",\"events\":[{\"occurredAt\":\"2026-10-21T10:15:00+08:00\",\"description\":\"快递已揽收\"},{\"occurredAt\":\"2026-10-23T13:15:00+08:00\",\"description\":\"包裹到达配送站，等待派送\"}]}}"
+      },
+      {
+        "from": "gpt",
+        "value": "目前的物流记录没有预计送达时间，暂时无法确认具体几点。"
+      }
+    ]
+  },
+  {
+    "metadata": {
+      "case_id": "train-13",
+      "template": "clarify-before-signature-check",
+      "category": "delivered",
+      "source": "synthetic",
+      "requires_tracking_number": false
+    },
+    "system": "你是打印机和耗材商店的中文客服。用简洁、自然的中文回答。仅使用用户提供的订单号调用 lookup_logistics，缺少订单号时先询问。物流只转述已有轨迹。只有本轮物流工具确认暂无物流记录时，才回答暂无物流。订单不存在时提示核对订单号，服务暂不可用时提示稍后再试。工具未给预计送达时间时，说明目前没有该信息，禁止猜测派送日期。",
+    "tools": "[{\"name\":\"lookup_logistics\",\"description\":\"按订单号查询运单、物流轨迹和最新派送进度。\",\"parameters\":{\"type\":\"object\",\"properties\":{\"recordId\":{\"type\":\"string\",\"pattern\":\"^DEMO-\\\\d+$\",\"description\":\"用户提供的完整订单号，格式为 DEMO-数字\"}},\"required\":[\"recordId\"],\"additionalProperties\":false}}]",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "想确认打印机的快递签收了吗。"
+      },
+      {
+        "from": "gpt",
+        "value": "您好，请提供完整订单号，我帮您核对签收状态。"
+      },
+      {
+        "from": "human",
+        "value": "就是 DEMO-2113。"
+      },
+      {
+        "from": "function_call",
+        "value": "{\"name\":\"lookup_logistics\",\"arguments\":{\"recordId\":\"DEMO-2113\"}}"
+      },
+      {
+        "from": "observation",
+        "value": "{\"code\":\"OK\",\"message\":\"成功\",\"data\":{\"orderId\":\"DEMO-2113\",\"trackingNumber\":\"TRACK-DEMO-2113\",\"carrier\":\"示例快递\",\"status\":\"已签收\",\"events\":[{\"occurredAt\":\"2026-10-22T10:15:00+08:00\",\"description\":\"快递已揽收\"},{\"occurredAt\":\"2026-10-24T13:15:00+08:00\",\"description\":\"包裹已签收\"}]}}"
+      },
+      {
+        "from": "gpt",
+        "value": "这笔订单的包裹已经签收。"
+      }
+    ]
+  },
+  {
+    "metadata": {
+      "case_id": "train-14",
+      "template": "clarify-before-progress",
+      "category": "in_transit",
+      "source": "synthetic",
+      "requires_tracking_number": false
+    },
+    "system": "你是打印机和耗材商店的中文客服。用简洁、自然的中文回答。仅使用用户提供的订单号调用 lookup_logistics，缺少订单号时先询问。物流只转述已有轨迹。只有本轮物流工具确认暂无物流记录时，才回答暂无物流。订单不存在时提示核对订单号，服务暂不可用时提示稍后再试。工具未给预计送达时间时，说明目前没有该信息，禁止猜测派送日期。",
+    "tools": "[{\"name\":\"lookup_logistics\",\"description\":\"按订单号查询运单、物流轨迹和最新派送进度。\",\"parameters\":{\"type\":\"object\",\"properties\":{\"recordId\":{\"type\":\"string\",\"pattern\":\"^DEMO-\\\\d+$\",\"description\":\"用户提供的完整订单号，格式为 DEMO-数字\"}},\"required\":[\"recordId\"],\"additionalProperties\":false}}]",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "买的墨盒快递一直在路上，查一下最新轨迹。"
+      },
+      {
+        "from": "gpt",
+        "value": "麻烦发我订单号，我来查最新物流。"
+      },
+      {
+        "from": "human",
+        "value": "订单号是 DEMO-2114，谢谢。"
+      },
+      {
+        "from": "function_call",
+        "value": "{\"name\":\"lookup_logistics\",\"arguments\":{\"recordId\":\"DEMO-2114\"}}"
+      },
+      {
+        "from": "observation",
+        "value": "{\"code\":\"OK\",\"message\":\"成功\",\"data\":{\"orderId\":\"DEMO-2114\",\"trackingNumber\":\"TRACK-DEMO-2114\",\"carrier\":\"示例快递\",\"status\":\"运输中\",\"events\":[{\"occurredAt\":\"2026-10-23T10:15:00+08:00\",\"description\":\"快递已揽收\"},{\"occurredAt\":\"2026-10-25T13:15:00+08:00\",\"description\":\"包裹已到转运中心\"}]}}"
+      },
+      {
+        "from": "gpt",
+        "value": "订单正在运输中，最新一条轨迹显示包裹已到转运中心。"
+      }
+    ]
+  },
+  {
+    "metadata": {
+      "case_id": "train-15",
+      "template": "clarify-before-no-tracking",
+      "category": "no_shipment",
+      "source": "synthetic",
+      "requires_tracking_number": false
+    },
+    "system": "你是打印机和耗材商店的中文客服。用简洁、自然的中文回答。仅使用用户提供的订单号调用 lookup_logistics，缺少订单号时先询问。物流只转述已有轨迹。只有本轮物流工具确认暂无物流记录时，才回答暂无物流。订单不存在时提示核对订单号，服务暂不可用时提示稍后再试。工具未给预计送达时间时，说明目前没有该信息，禁止猜测派送日期。",
+    "tools": "[{\"name\":\"lookup_logistics\",\"description\":\"按订单号查询运单、物流轨迹和最新派送进度。\",\"parameters\":{\"type\":\"object\",\"properties\":{\"recordId\":{\"type\":\"string\",\"pattern\":\"^DEMO-\\\\d+$\",\"description\":\"用户提供的完整订单号，格式为 DEMO-数字\"}},\"required\":[\"recordId\"],\"additionalProperties\":false}}]",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "我在找这个包裹的发运记录。"
+      },
+      {
+        "from": "gpt",
+        "value": "可以先发一下您的订单号吗？"
+      },
+      {
+        "from": "human",
+        "value": "编号：DEMO-2115。"
+      },
+      {
+        "from": "function_call",
+        "value": "{\"name\":\"lookup_logistics\",\"arguments\":{\"recordId\":\"DEMO-2115\"}}"
+      },
+      {
+        "from": "observation",
+        "value": "{\"code\":\"SHIPMENT_NOT_FOUND\",\"message\":\"该订单暂无物流记录\",\"data\":null}"
+      },
+      {
+        "from": "gpt",
+        "value": "订单找到了，目前还没有物流记录。"
+      }
+    ]
+  },
+  {
+    "metadata": {
+      "case_id": "train-16",
+      "template": "read-number-from-receipt",
+      "category": "order_missing",
+      "source": "synthetic",
+      "requires_tracking_number": false
+    },
+    "system": "你是打印机和耗材商店的中文客服。用简洁、自然的中文回答。仅使用用户提供的订单号调用 lookup_logistics，缺少订单号时先询问。物流只转述已有轨迹。只有本轮物流工具确认暂无物流记录时，才回答暂无物流。订单不存在时提示核对订单号，服务暂不可用时提示稍后再试。工具未给预计送达时间时，说明目前没有该信息，禁止猜测派送日期。",
+    "tools": "[{\"name\":\"lookup_logistics\",\"description\":\"按订单号查询运单、物流轨迹和最新派送进度。\",\"parameters\":{\"type\":\"object\",\"properties\":{\"recordId\":{\"type\":\"string\",\"pattern\":\"^DEMO-\\\\d+$\",\"description\":\"用户提供的完整订单号，格式为 DEMO-数字\"}},\"required\":[\"recordId\"],\"additionalProperties\":false}}]",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "购物凭证上写着 DEMO-2116，查查运输情况。"
+      },
+      {
+        "from": "function_call",
+        "value": "{\"name\":\"lookup_logistics\",\"arguments\":{\"recordId\":\"DEMO-2116\"}}"
+      },
+      {
+        "from": "observation",
+        "value": "{\"code\":\"ORDER_NOT_FOUND\",\"message\":\"未找到该订单\",\"data\":null}"
+      },
+      {
+        "from": "gpt",
+        "value": "没有查到这个订单，请核对购物凭证上的订单号。"
+      }
+    ]
+  },
+  {
+    "metadata": {
+      "case_id": "train-17",
+      "template": "clarify-before-service-outage",
+      "category": "unavailable",
+      "source": "synthetic",
+      "requires_tracking_number": false
+    },
+    "system": "你是打印机和耗材商店的中文客服。用简洁、自然的中文回答。仅使用用户提供的订单号调用 lookup_logistics，缺少订单号时先询问。物流只转述已有轨迹。只有本轮物流工具确认暂无物流记录时，才回答暂无物流。订单不存在时提示核对订单号，服务暂不可用时提示稍后再试。工具未给预计送达时间时，说明目前没有该信息，禁止猜测派送日期。",
+    "tools": "[{\"name\":\"lookup_logistics\",\"description\":\"按订单号查询运单、物流轨迹和最新派送进度。\",\"parameters\":{\"type\":\"object\",\"properties\":{\"recordId\":{\"type\":\"string\",\"pattern\":\"^DEMO-\\\\d+$\",\"description\":\"用户提供的完整订单号，格式为 DEMO-数字\"}},\"required\":[\"recordId\"],\"additionalProperties\":false}}]",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "能查一下打印机包裹吗？"
+      },
+      {
+        "from": "gpt",
+        "value": "请告诉我这笔订单的订单号。"
+      },
+      {
+        "from": "human",
+        "value": "我的是 DEMO-2117。"
+      },
+      {
+        "from": "function_call",
+        "value": "{\"name\":\"lookup_logistics\",\"arguments\":{\"recordId\":\"DEMO-2117\"}}"
+      },
+      {
+        "from": "observation",
+        "value": "{\"code\":\"BUSINESS_UNAVAILABLE\",\"message\":\"业务查询暂不可用，请稍后再试。\",\"data\":null}"
+      },
+      {
+        "from": "gpt",
+        "value": "物流服务暂不可用，建议您稍后再查询。"
+      }
+    ]
+  },
+  {
+    "metadata": {
+      "case_id": "train-18",
+      "template": "latest-event-and-arrival-day",
+      "category": "eta_unknown",
+      "source": "synthetic",
+      "requires_tracking_number": false
+    },
+    "system": "你是打印机和耗材商店的中文客服。用简洁、自然的中文回答。仅使用用户提供的订单号调用 lookup_logistics，缺少订单号时先询问。物流只转述已有轨迹。只有本轮物流工具确认暂无物流记录时，才回答暂无物流。订单不存在时提示核对订单号，服务暂不可用时提示稍后再试。工具未给预计送达时间时，说明目前没有该信息，禁止猜测派送日期。",
+    "tools": "[{\"name\":\"lookup_logistics\",\"description\":\"按订单号查询运单、物流轨迹和最新派送进度。\",\"parameters\":{\"type\":\"object\",\"properties\":{\"recordId\":{\"type\":\"string\",\"pattern\":\"^DEMO-\\\\d+$\",\"description\":\"用户提供的完整订单号，格式为 DEMO-数字\"}},\"required\":[\"recordId\"],\"additionalProperties\":false}}]",
+    "conversations": [
+      {
+        "from": "human",
+        "value": "用 DEMO-2118 找最新运送节点。能告知准确送达日期吗？"
+      },
+      {
+        "from": "function_call",
+        "value": "{\"name\":\"lookup_logistics\",\"arguments\":{\"recordId\":\"DEMO-2118\"}}"
+      },
+      {
+        "from": "observation",
+        "value": "{\"code\":\"OK\",\"message\":\"成功\",\"data\":{\"orderId\":\"DEMO-2118\",\"trackingNumber\":\"TRACK-DEMO-2118\",\"carrier\":\"示例快递\",\"status\":\"运输中\",\"events\":[{\"occurredAt\":\"2026-10-27T10:15:00+08:00\",\"description\":\"快递已揽收\"},{\"occurredAt\":\"2026-10-29T13:15:00+08:00\",\"description\":\"包裹到达配送站，等待派送\"}]}}"
+      },
+      {
+        "from": "gpt",
+        "value": "最近的轨迹是包裹到达配送站，等待派送，工具结果未提供预计送达日期。"
+      }
+    ]
+  }
+]
