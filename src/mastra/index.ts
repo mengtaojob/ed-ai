@@ -8,5 +8,6 @@ export const mastra = new Mastra({
   agents: { supportAgent },
   gateways: { ollamaGateway },
   storage: new InMemoryStore(),
+  bundler: { sourcemap: true },
   server: { host: '127.0.0.1', port: 4111 },
 });
