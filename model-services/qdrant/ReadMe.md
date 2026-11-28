@@ -45,9 +45,17 @@ curl -fsS http://127.0.0.1:8012/health
 
 运行时只读取本地文件。ONNX Runtime 的 `CPUExecutionProvider` 对每个「问句、原文」对输出一个 logit。可用 `RERANKER_URL` 指定其它本机地址。[BGE 多语言 Cross-Encoder](https://huggingface.co/BAAI/bge-reranker-v2-m3) · [固定 ONNX 权重](https://huggingface.co/onnx-community/bge-reranker-v2-m3-ONNX/tree/6f5ff65298512715a1e669753bc754d2bc8f367b)
 
-## 调用客服 Agent
+## 启动和验收客服 Agent
 
-启动 Koa、LAYA、重排和 Studio 后，调用实际客服 Agent：
+本机运行 Ollama 后执行 `ollama pull qwen3.5:4b`，并使用前两节准备 Embedding、Qdrant 和重排。启动 Qdrant 后执行 `npm run knowledge:import`。Koa、LAYA 和 Studio 分别在三个终端运行：
+
+```sh
+npm run dev
+sh model-services/laya/start.sh
+AUTO_BLOCK_EXTERNAL_PROVIDERS=true npm run dev:agent
+```
+
+另开终端调用实际客服 Agent：
 
 ```sh
 curl -fsS http://127.0.0.1:4111/api/agents/support-agent/generate \
@@ -56,7 +64,17 @@ curl -fsS http://127.0.0.1:4111/api/agents/support-agent/generate \
 
 原文链路实测调用了 `searchKnowledge`，返回首条 `PRINTER-A-E03`，回复列出关机、排查卡纸、重启和故障持续时联系人工客服，并附「Demo 产品手册 · 常见故障」。
 
-工具调用结果的 `trace` 包含原文召回、图谱关系、按 ID 回查成功的原文、去重后的重排输入和分数。关系用于定位资料。Qwen 的工具消息只包含状态和最多 3 条完整原文。
+工具调用结果的 `trace` 包含原文召回、图谱关系、按 ID 回查成功的原文、去重后的重排输入和分数。关系用于定位资料。Qwen 的工具消息只包含状态和最多 3 条完整原文。Demo 用最低 logit −1.5 和距首位最多 2 分筛选原文，这些值按本批中文资料调试。
+
+知识答复的出处由 Mastra 输出处理器校验。处理器使用本次工具返回的资料 ID 重建出处名称，证据不足或引用无法确认时返回保守答复。正文仍由 Qwen 根据原文组织。
+
+```sh
+npm run check
+node --test src/agents/knowledge-citations.test.ts
+npm run knowledge:acceptance
+```
+
+验收调用实际 `support-agent/generate`，检查图谱按 ID 回查、重排与引用，回归物流及按单售后。原始返回和摘要保存在忽略目录 `.local-rag/acceptance/`。
 
 ## Neo4j 导入计划
 

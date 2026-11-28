@@ -11,6 +11,7 @@
     "dev:agent": "mastra dev",
     "demo": "node src/demo/preview.ts",
     "knowledge:import": "node src/knowledge/import.ts",
+    "knowledge:acceptance": "node src/demo/knowledge-acceptance.ts",
     "check": "tsc"
   },
   "dependencies": {

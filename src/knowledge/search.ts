@@ -31,6 +31,7 @@ export type SearchResult = z.infer<typeof searchResultSchema>;
 // 召回与重排各有一层门槛。logit 下限根据本项目中文 Demo 调试，不能当作通用置信度。
 const minCosine = 0.45;
 const minRerankLogit = -1.5;
+const maxRerankGap = 2;
 
 /** 按关系指向的 articleIds 批量读取 Qdrant 原文点。关系描述只能用于召回。 */
 async function fetchArticles(articleIds: string[], signal?: AbortSignal) {
@@ -91,6 +92,8 @@ export async function searchKnowledge(query: string, signal?: AbortSignal): Prom
     .sort((left, right) => right.score - left.score);
   trace.reranker = identity;
   trace.ranked = ranked.map(({ id, score }) => ({ id, score }));
-  const evidence = ranked.filter(({ score }) => score >= minRerankLogit).slice(0, 3);
+  // 同时按首位分数收窄证据，避免相邻主题（例如退款与保价）被一并展开。
+  const cutoff = Math.max(minRerankLogit, ranked[0].score - maxRerankGap);
+  const evidence = ranked.filter(({ score }) => score >= cutoff).slice(0, 3);
   return { status: evidence.length ? 'ok' : 'insufficient_evidence', evidence, trace };
 }

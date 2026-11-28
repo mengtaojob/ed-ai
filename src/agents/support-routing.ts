@@ -1,5 +1,6 @@
 import type { ProcessInputStepArgs, ProcessInputStepResult, ProcessLLMRequestArgs, Processor } from '@mastra/core/processors';
 import { recognizeIntent } from '../../model-services/laya/client.mjs';
+import { knowledgeRouteKey } from './knowledge-citations.ts';
 import type { businessTools } from './tools/business-tools.ts';
 import type { knowledgeTools } from './tools/knowledge-tool.ts';
 
@@ -33,7 +34,7 @@ export const supportRouting = {
    * 在首步识别意图并选择查询工具或追问编号，后续步骤只让模型根据工具结果作答。
    * `messages` 是会话消息，`systemMessages` 是已有系统指令，`stepNumber` 是从 0 开始的步骤序号，`abortSignal` 用于取消意图识别，`state` 用于在处理器钩子间共享状态。
    */
-  async processInputStep({ messages, systemMessages, stepNumber, abortSignal, state }: ProcessInputStepArgs): Promise<ProcessInputStepResult> {
+  async processInputStep({ messages, systemMessages, stepNumber, abortSignal, state, requestContext }: ProcessInputStepArgs): Promise<ProcessInputStepResult> {
     if (stepNumber > 0) {
       return {
         toolChoice: 'none',
@@ -43,6 +44,7 @@ export const supportRouting = {
         }],
       };
     }
+    requestContext?.set(knowledgeRouteKey, false);
 
     // Studio 可能通过 signal 传入用户消息，这里只提取用户发出的文本。
     const userMessages = messages.filter(({ role, content }) => {
@@ -71,6 +73,7 @@ export const supportRouting = {
 
     /** 按原问题检索知识。通用政策与产品知识用同一个查询工具。 */
     function retrieveKnowledge(label: string): ProcessInputStepResult {
+      requestContext?.set(knowledgeRouteKey, true);
       return route(`LAYA 识别为${label}。请调用 searchKnowledge，把本轮用户的完整问题原样传给 query。`, 'searchKnowledge');
     }
 
