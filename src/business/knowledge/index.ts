@@ -1,11 +1,11 @@
-interface KnowledgeArticle {
+export interface KnowledgeArticle {
   readonly id: string;
   readonly title: string;
   readonly source: string;
   readonly content: string;
 }
 
-const articles: readonly KnowledgeArticle[] = [
+export const knowledgeArticles: readonly KnowledgeArticle[] = [
   {
     id: 'PRINTER-A',
     title: '打印机 A 产品资料',
@@ -34,5 +34,5 @@ const articles: readonly KnowledgeArticle[] = [
 
 /** 按知识条目编号 `articleId` 查询条目正文及出处。 */
 export function findKnowledgeArticle(articleId: string): KnowledgeArticle | undefined {
-  return articles.find((article) => article.id === articleId);
+  return knowledgeArticles.find((article) => article.id === articleId);
 }

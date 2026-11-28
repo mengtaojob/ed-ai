@@ -10,6 +10,7 @@
     "dev": "node src/business/api/server.ts",
     "dev:agent": "mastra dev",
     "demo": "node src/demo/preview.ts",
+    "knowledge:import": "node src/knowledge/import.ts",
     "check": "tsc"
   },
   "dependencies": {
@@ -17,6 +18,7 @@
     "@koa/router": "^15.7.1",
     "@mastra/core": "^1.86.0",
     "@mastra/memory": "^1.41.3",
+    "@mastra/qdrant": "1.1.7",
     "koa": "^3.3.0",
     "zod": "^4.6.7"
   },
