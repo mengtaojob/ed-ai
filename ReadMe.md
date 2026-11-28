@@ -65,6 +65,7 @@ Demo 用打印机 A 和墨盒 B 串起七个场景。以下结果以 2026 年 11
 | `training/` | 预留训练数据准备脚本、训练入口和评估配置 |
 
 查物流的第一轮 QLoRA 试验见 [数据、基线和训练命令](qlora/ReadMe.md)。
+原文知识问答见 [Qdrant 入库说明](model-services/qdrant/ReadMe.md)。
 
 使用 Node.js 22.18+（22.x）或 24+，在项目根目录运行：
 
@@ -109,7 +110,7 @@ npm ci
 AUTO_BLOCK_EXTERNAL_PROVIDERS=true npm run dev:agent
 ```
 
-新会话可以直接发送「订单号是 DEMO-1002」查询物流。如果先提出退款、保价等请求，再补交对应编号，Agent 会沿用前一条业务意图。LAYA 处理自然语言意图，Mastra 输入处理器按意图限制可用的 Tools，Qwen 读取 Koa 的查询结果并组织回复。Studio 会显示工具调用及结果。对话历史保存在 Mastra 的进程内存中，重启服务后会清空。当前提供业务查询和资格预览。
+新会话可以直接发送「订单号是 DEMO-1002」查询物流。如果先提出退款、保价等请求，再补交对应编号，Agent 会沿用前一条业务意图。LAYA 处理自然语言意图，Mastra 输入处理器按意图限制可用的 Tools。查单交给 Koa。产品知识和通用退款、保价政策交给 `searchKnowledge`，需要先启动本机 Embedding 和 Qdrant 并导入原文。Qwen 根据结果组织回复，Studio 显示工具调用及结果。对话历史保存在 Mastra 的进程内存中，重启服务后会清空。
 
 | 本地服务 | 默认地址 | 地址配置 |
 | --- | --- | --- |

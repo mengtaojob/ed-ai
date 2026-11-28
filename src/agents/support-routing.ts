@@ -1,12 +1,13 @@
 import type { ProcessInputStepArgs, ProcessInputStepResult, ProcessLLMRequestArgs, Processor } from '@mastra/core/processors';
 import { recognizeIntent } from '../../model-services/laya/client.mjs';
 import type { businessTools } from './tools/business-tools.ts';
+import type { knowledgeTools } from './tools/knowledge-tool.ts';
 
 type Intent = Awaited<ReturnType<typeof recognizeIntent>>['intent'];
-type ToolName = keyof typeof businessTools;
+type ToolName = keyof (typeof businessTools & typeof knowledgeTools);
 
 const routes = {
-  knowledge: { tool: 'lookup_knowledge' },
+  knowledge: { tool: 'searchKnowledge' },
   order: { tool: 'lookup_order', prefix: 'DEMO-', field: '订单号' },
   logistics: { tool: 'lookup_logistics', prefix: 'DEMO-', field: '订单号' },
   refund: { tool: 'lookup_refund', prefix: 'DEMO-', field: '订单号' },
@@ -68,6 +69,11 @@ export const supportRouting = {
       return route(`${context}请先调用 ${tool}，将用户提供的 ${recordId} 原样传入 recordId。`, tool);
     }
 
+    /** 按原问题检索知识。通用政策与产品知识用同一个查询工具。 */
+    function retrieveKnowledge(label: string): ProcessInputStepResult {
+      return route(`LAYA 识别为${label}。请调用 searchKnowledge，把本轮用户的完整问题原样传给 query。`, 'searchKnowledge');
+    }
+
     if (!latest) return route('请用户用文字描述要咨询的问题。');
 
     const previous = userMessages.at(-2);
@@ -102,18 +108,19 @@ export const supportRouting = {
     }
 
     if (!('prefix' in selected)) {
-      return route(`LAYA 识别为${decision.label}。请先选择相关知识条目并调用 ${selected.tool}。`, selected.tool);
+      return retrieveKnowledge(decision.label);
+    }
+    // 通用政策即使在查过订单的会话中也查原文。当前消息明确包含订单号时仍走按单查询。
+    if ((decision.intent === 'refund' || decision.intent === 'price-protection')
+      && /政策|规则|期限|几天|多久|什么条件|哪些条件|怎么申请|如何申请/.test(latest)
+      && ![...latest.matchAll(recordIdPattern)].some(([id]) => id.toUpperCase().startsWith(selected.prefix))) {
+      return retrieveKnowledge(decision.label);
     }
 
     const recordId = userMessages.slice(-4).reverse()
       .flatMap((text) => [...text.toUpperCase().matchAll(recordIdPattern)].map(([id]) => id))
       .find((id) => id.startsWith(selected.prefix));
     if (!recordId) {
-      if (/(?:政策|规则|期限|几天|多久)/.test(latest)
-        && (decision.intent === 'refund' || decision.intent === 'price-protection')) {
-        const article = decision.intent === 'refund' ? 'RETURN-POLICY' : 'PRICE-PROTECTION-POLICY';
-        return route(`LAYA 识别为${decision.label}。用户在询问通用政策，请先调用 lookup_knowledge，recordId 为 ${article}。`, 'lookup_knowledge');
-      }
       const readOnly = decision.intent === 'complaint' || decision.intent === 'handoff'
         ? '当前可查询已有模拟记录。'
         : '';

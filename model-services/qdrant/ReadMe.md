@@ -25,3 +25,12 @@ curl -fsS http://127.0.0.1:6333/collections/yd_knowledge_articles/points/count \
 实测 Ollama 返回 1024 维，集合使用 1024 维 Cosine。四条原文来自 Koa 共享的演示资料，每条是一个点，保留 ID、标题、正文和出处。重复导入按稳定 ID 覆盖，连续两次导入后 Qdrant API 的精确计数均为 4。[Embedding 模型](https://ollama.com/library/qwen3-embedding:0.6b) · [Mastra Qdrant 集成](https://mastra.ai/integrations/vectors/qdrant)
 
 默认连接本机 Ollama 与 Qdrant，可用 `OLLAMA_EMBED_BASE_URL` 和 `QDRANT_URL` 指定本地服务地址。
+
+启动 Koa、LAYA 和 Studio 后，调用实际客服 Agent：
+
+```sh
+curl -fsS http://127.0.0.1:4111/api/agents/support-agent/generate \
+  -H 'Content-Type: application/json' -d '{"messages":"打印机 A 报 E03 怎么办？"}'
+```
+
+原文链路实测调用了 `searchKnowledge`，返回首条 `PRINTER-A-E03`，回复列出关机、排查卡纸、重启和故障持续时联系人工客服，并附「Demo 产品手册 · 常见故障」。

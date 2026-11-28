@@ -38,13 +38,6 @@ function lookupTool(id: string, description: string, path: (id: string) => strin
 const orderId = z.string().regex(/^DEMO-\d+$/).describe('用户提供的完整订单号，例如 DEMO-1001');
 
 export const businessTools = {
-  lookup_knowledge: lookupTool(
-    'lookup_knowledge',
-    '查询客服知识条目及出处。根据问题选择条目。',
-    (id) => `/knowledge/${id}`,
-    z.enum(['PRINTER-A', 'PRINTER-A-E03', 'RETURN-POLICY', 'PRICE-PROTECTION-POLICY'])
-      .describe('PRINTER-A 产品规格和墨盒；PRINTER-A-E03 卡纸和 E03；RETURN-POLICY 退款政策；PRICE-PROTECTION-POLICY 保价政策'),
-  ),
   lookup_order: lookupTool('lookup_order', '查询订单商品、实付金额和订单状态。', (id) => `/orders/${id}`, orderId),
   lookup_logistics: lookupTool('lookup_logistics', '按订单号查询运单、物流轨迹和最新派送进度。', (id) => `/orders/${id}/logistics`, orderId),
   lookup_refund: lookupTool('lookup_refund', '按订单号查询模拟退款资格、预估金额及原因。', (id) => `/orders/${id}/refund`, orderId),
