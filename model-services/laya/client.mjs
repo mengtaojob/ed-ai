@@ -4,12 +4,12 @@ const endpoint = new URL('/v1/systemone', baseUrl);
 const intents = {
   knowledge: {
     label: '知识问答',
-    description: '产品知识、打印机故障、E03、卡纸、售后政策',
+    description: '打印机规格、墨盒选购、故障排查、E03、卡纸',
     example: '打印机报 E03，怎么排查卡纸？',
   },
   order: {
     label: '查订单',
-    description: '查询订单详情、购买商品、付款金额或订单状态。',
+    description: '已有订单明细、成交商品、实付金额、订单状态',
     example: '帮我查一下 DEMO-1001 买了什么、实付多少钱。',
   },
   logistics: {

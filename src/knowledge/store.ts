@@ -3,6 +3,7 @@ import { QdrantVector } from '@mastra/qdrant';
 import { embeddingDimension, embedTexts } from './embedding.ts';
 
 export const articleCollection = 'yd_knowledge_articles';
+export const relationCollection = 'yd_knowledge_relations';
 export const qdrantUrl = process.env.QDRANT_URL || 'http://127.0.0.1:6333';
 export const knowledgeStore = new QdrantVector({
   id: 'local-knowledge-qdrant',
